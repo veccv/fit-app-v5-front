@@ -1,10 +1,9 @@
-import { Head, Main, NextScript } from "next/document";
-import "@/styles/globals.css";
+import { Head, Html, Main, NextScript } from "next/document";
 import { cn, fontSans } from "@/lib/utils";
 
 export default function Document() {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <Html>
       <Head />
       <body
         className={cn(
@@ -15,6 +14,6 @@ export default function Document() {
         <Main />
         <NextScript />
       </body>
-    </html>
+    </Html>
   );
 }
