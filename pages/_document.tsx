@@ -1,16 +1,12 @@
 import { Head, Html, Main, NextScript } from "next/document";
-import { cn, fontSans } from "@/lib/utils";
 
 export default function Document() {
   return (
     <Html>
+      <link rel="preconnect" href="https://rsms.me/" />
+      <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
       <Head />
-      <body
-        className={cn(
-          "min-h-screen bg-background font-sans antialiased",
-          fontSans.variable,
-        )}
-      >
+      <body>
         <Main />
         <NextScript />
       </body>
