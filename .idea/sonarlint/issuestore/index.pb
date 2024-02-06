@@ -102,8 +102,6 @@ H
 components/ui/Navbar.tsx,0/3/03e854341fd52e6045199fcd1df1ddea7b0e3342
 M
 components/ui/MainContent.tsx,3/5/350ab5932c78c79cf87691f60ce49af32f9d647d
-F
-shared/FitProvider.tsx,6/e/6e5bbed16688aae1eb7206c62dd2243527b8fea6
 >
 types/types.ts,3/5/353ee6ebceb4d469d913e7558b730312d92d5199
 F
@@ -160,8 +158,6 @@ w
 G.idea/sonarlint/issuestore/0/3/03e854341fd52e6045199fcd1df1ddea7b0e3342,1/0/10e585f2aa1c7f678ba4f8168efdb654ac204e35
 w
 G.idea/sonarlint/issuestore/9/f/9fe84ebb15faf917b7def6236dba604453cc61e0,f/0/f0e0f9cec86fe4b939ae22be5264c758801eb28f
-Å
-Q.idea/sonarlint/securityhotspotstore/6/e/6e5bbed16688aae1eb7206c62dd2243527b8fea6,d/0/d0a8ced52415cbf8625796ccf10f107c575d4198
 w
 G.idea/sonarlint/issuestore/0/0/00861cac31c437dcc74bb945d3f67fd13dec49ef,8/2/820f784e8db007df96ada689992f758fce8fd60b
 Å
