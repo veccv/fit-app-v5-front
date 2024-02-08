@@ -8,21 +8,31 @@ import {
   Input,
   Stack,
 } from "@chakra-ui/react";
+import { loginUser } from "@/utils/login-user";
+import { useRouter } from "next/router";
+import { useFitContext } from "@/context/FitContext";
 
 const LoginForm = () => {
+  const { push } = useRouter();
+  const { setUserToken } = useFitContext();
+
   const schema = z.object({
     username: z.string().min(1, "Username is required"),
-    password: z.string().min(8, "Password is required"),
+    password: z.string().min(3, "Password is required"),
   });
 
   return (
     <Formik
       initialValues={{ username: "", password: "" }}
       onSubmit={(values, actions) => {
-        setTimeout(() => {
-          alert(JSON.stringify(values, null, 2));
+        loginUser({
+          email: values.username,
+          password: values.password,
+        }).then((response) => {
           actions.setSubmitting(false);
-        }, 1000);
+          setUserToken(response);
+          push("/");
+        });
       }}
       validate={(values) => {
         try {

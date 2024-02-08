@@ -9,7 +9,7 @@ const LoginPage = () => {
   return (
     <Flex w="100%" h="100%" justifyContent="space-between">
       <IconButton
-        aria-label="Search database"
+        aria-label=""
         icon={<BiArrowBack />}
         mt="1em"
         ml="1em"

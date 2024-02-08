@@ -1,18 +1,94 @@
-import React, { createContext, FC, ReactNode, useMemo, useState } from "react";
+import React, {
+  createContext,
+  FC,
+  ReactNode,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { RefreshToken } from "@/utils/refresh-token";
+import { components } from "@/utils/generated-schema";
 
 interface FitProviderProps {
-  actualTab: string;
-  setActualTab: (actualTab: string) => void;
+  userToken: components["schemas"]["AuthenticationResponse"] | null;
+  setUserToken: (
+    userToken: components["schemas"]["AuthenticationResponse"] | null,
+  ) => void;
 }
 
 const Context = createContext<FitProviderProps | undefined>(undefined);
 
 const FitContext: FC<{ children: ReactNode }> = ({ children }) => {
-  const [actualTab, setActualTab] = useState<string>("main");
+  const [userToken, setUserToken] = useState<
+    components["schemas"]["AuthenticationResponse"] | null
+  >(null);
+  const [tokenGetTime, setTokenGetTime] = useState<Date | null>(null);
+
+  useEffect(() => {
+    const localUserToken = window.localStorage.getItem("userToken");
+    // const localTokenGetTime = window.localStorage.getItem("tokenGetTime");
+
+    if (localUserToken) {
+      setUserToken(
+        JSON.parse(
+          localUserToken,
+        ) as components["schemas"]["AuthenticationResponse"],
+      );
+    }
+
+    // if (localTokenGetTime) {
+    //   setTokenGetTime(new Date(JSON.parse(localTokenGetTime)));
+    // }
+  }, [setUserToken, setTokenGetTime]);
+
+  useEffect(() => {
+    if (userToken)
+      window.localStorage.setItem("userToken", JSON.stringify(userToken));
+
+    // if (tokenGetTime)
+    //   window.localStorage.setItem("tokenGetTime", JSON.stringify(tokenGetTime));
+  }, [userToken, tokenGetTime]);
+
+  useEffect(() => {
+    const localUserToken = window.localStorage.getItem("userToken");
+
+    if (localUserToken) {
+      const parsedToken = JSON.parse(
+        localUserToken,
+      ) as components["schemas"]["AuthenticationResponse"];
+
+      RefreshToken(parsedToken).then((userToken) => {
+        if (userToken) {
+          setUserToken(userToken);
+        }
+      });
+    }
+  }, []);
+
+  // useEffect(() => {
+  //   const intervalId = setInterval(() => {
+  //     if (userToken && tokenGetTime) {
+  //       const currentTime = new Date();
+  //       const timeDiff = currentTime.getTime() - tokenGetTime.getTime();
+  //       if (timeDiff > userToken.expires_in * 1000 - 5000) {
+  //         GetToken(username, password).then((userToken) => {
+  //           if (userToken) {
+  //             setUserToken(userToken);
+  //             setTokenGetTime(new Date());
+  //           }
+  //         });
+  //       }
+  //     }
+  //   }, 5000);
+  //
+  //   return () => {
+  //     clearInterval(intervalId);
+  //   };
+  // }, [userToken, tokenGetTime]);
 
   const value = useMemo(
-    () => ({ actualTab, setActualTab }),
-    [actualTab, setActualTab],
+    () => ({ userToken, setUserToken }),
+    [userToken, setUserToken],
   );
 
   return <Context.Provider value={value}>{children}</Context.Provider>;
