@@ -1,12 +1,15 @@
 import { Box, Button, Flex, Stack, Text } from "@chakra-ui/react";
 import { ReactNode } from "react";
 import { useRouter } from "next/router";
+import { useFitContext } from "@/context/FitContext";
 
 interface NavBarProps {
   children: ReactNode;
 }
 
 const NavBar = ({ children }: NavBarProps) => {
+  const { userToken, setUserToken } = useFitContext();
+
   const { push, pathname } = useRouter();
   return (
     <>
@@ -21,22 +24,37 @@ const NavBar = ({ children }: NavBarProps) => {
           alignItems="center"
         >
           <Text>Fit-App</Text>
-          <Stack direction="row">
+          {userToken ? (
             <Button
               colorScheme="teal"
               variant="outline"
-              onClick={() => push("/login")}
+              onClick={() => {
+                push("/").then(() => {
+                  setUserToken(null);
+                  window.localStorage.removeItem("userToken");
+                });
+              }}
             >
-              Log in
+              Log out
             </Button>
-            <Button
-              colorScheme="teal"
-              variant="outline"
-              onClick={() => push("/register")}
-            >
-              Sign up
-            </Button>
-          </Stack>
+          ) : (
+            <Stack direction="row">
+              <Button
+                colorScheme="teal"
+                variant="outline"
+                onClick={() => push("/login")}
+              >
+                Log in
+              </Button>
+              <Button
+                colorScheme="teal"
+                variant="outline"
+                onClick={() => push("/register")}
+              >
+                Sign up
+              </Button>
+            </Stack>
+          )}
         </Flex>
       )}
       <Box w="100%" h="100%">
