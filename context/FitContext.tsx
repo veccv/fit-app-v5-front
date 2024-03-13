@@ -56,6 +56,9 @@ const FitContext: FC<{ children: ReactNode }> = ({ children }) => {
       RefreshToken(parsedToken).then((userToken) => {
         if (userToken) {
           setUserToken(userToken);
+        } else {
+          setUserToken(null);
+          setTokenGetTime(null);
         }
       });
     }
