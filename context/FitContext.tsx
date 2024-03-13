@@ -34,7 +34,7 @@ const FitContext: FC<{ children: ReactNode }> = ({ children }) => {
           Authorization: `Bearer ${userToken?.token}`,
         },
       });
-      return await res.data();
+      return res.data;
     },
     [userToken],
   );
