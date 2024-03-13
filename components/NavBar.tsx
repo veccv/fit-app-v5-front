@@ -25,18 +25,38 @@ const NavBar = ({ children }: NavBarProps) => {
         >
           <Text>Fit-App</Text>
           {userToken ? (
-            <Button
-              colorScheme="teal"
-              variant="outline"
-              onClick={() => {
-                push("/").then(() => {
-                  setUserToken(null);
-                  window.localStorage.removeItem("userToken");
-                });
-              }}
-            >
-              Log out
-            </Button>
+            <Stack direction="row">
+              <Button
+                colorScheme="teal"
+                variant="outline"
+                onClick={() => {
+                  push("/");
+                }}
+              >
+                Day plan
+              </Button>
+              <Button
+                colorScheme="teal"
+                variant="outline"
+                onClick={() => {
+                  push("/products");
+                }}
+              >
+                Products list
+              </Button>
+              <Button
+                colorScheme="teal"
+                variant="outline"
+                onClick={() => {
+                  push("/").then(() => {
+                    setUserToken(null);
+                    window.localStorage.removeItem("userToken");
+                  });
+                }}
+              >
+                Log out
+              </Button>
+            </Stack>
           ) : (
             <Stack direction="row">
               <Button
