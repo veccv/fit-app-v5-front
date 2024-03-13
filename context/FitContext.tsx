@@ -26,7 +26,6 @@ const FitContext: FC<{ children: ReactNode }> = ({ children }) => {
 
   useEffect(() => {
     const localUserToken = window.localStorage.getItem("userToken");
-    // const localTokenGetTime = window.localStorage.getItem("tokenGetTime");
 
     if (localUserToken) {
       setUserToken(
@@ -34,19 +33,16 @@ const FitContext: FC<{ children: ReactNode }> = ({ children }) => {
           localUserToken,
         ) as components["schemas"]["AuthenticationResponse"],
       );
+      setTokenGetTime(new Date());
     }
-
-    // if (localTokenGetTime) {
-    //   setTokenGetTime(new Date(JSON.parse(localTokenGetTime)));
-    // }
   }, [setUserToken, setTokenGetTime]);
 
   useEffect(() => {
     if (userToken)
       window.localStorage.setItem("userToken", JSON.stringify(userToken));
 
-    // if (tokenGetTime)
-    //   window.localStorage.setItem("tokenGetTime", JSON.stringify(tokenGetTime));
+    if (tokenGetTime)
+      window.localStorage.setItem("tokenGetTime", JSON.stringify(tokenGetTime));
   }, [userToken, tokenGetTime]);
 
   useEffect(() => {
@@ -65,26 +61,26 @@ const FitContext: FC<{ children: ReactNode }> = ({ children }) => {
     }
   }, []);
 
-  // useEffect(() => {
-  //   const intervalId = setInterval(() => {
-  //     if (userToken && tokenGetTime) {
-  //       const currentTime = new Date();
-  //       const timeDiff = currentTime.getTime() - tokenGetTime.getTime();
-  //       if (timeDiff > userToken.expires_in * 1000 - 5000) {
-  //         GetToken(username, password).then((userToken) => {
-  //           if (userToken) {
-  //             setUserToken(userToken);
-  //             setTokenGetTime(new Date());
-  //           }
-  //         });
-  //       }
-  //     }
-  //   }, 5000);
-  //
-  //   return () => {
-  //     clearInterval(intervalId);
-  //   };
-  // }, [userToken, tokenGetTime]);
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (userToken && tokenGetTime) {
+        const currentTime = new Date();
+        const timeDiff = currentTime.getTime() - tokenGetTime.getTime();
+        if (timeDiff > 60 * 1000) {
+          RefreshToken(userToken).then((userToken) => {
+            if (userToken) {
+              setUserToken(userToken);
+              setTokenGetTime(new Date());
+            }
+          });
+        }
+      }
+    }, 5000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [userToken, tokenGetTime]);
 
   const value = useMemo(
     () => ({ userToken, setUserToken }),
