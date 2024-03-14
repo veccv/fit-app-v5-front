@@ -72,6 +72,8 @@ const FitContext: FC<{ children: ReactNode }> = ({ children }) => {
         if (userToken) {
           setUserToken(userToken);
         } else {
+          window.localStorage.removeItem("userToken");
+          window.localStorage.removeItem("tokenGetTime");
           setUserToken(null);
           setTokenGetTime(null);
         }
@@ -89,6 +91,11 @@ const FitContext: FC<{ children: ReactNode }> = ({ children }) => {
             if (userToken) {
               setUserToken(userToken);
               setTokenGetTime(new Date());
+            } else {
+              window.localStorage.removeItem("userToken");
+              window.localStorage.removeItem("tokenGetTime");
+              setUserToken(null);
+              setTokenGetTime(null);
             }
           });
         }
