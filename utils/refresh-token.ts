@@ -12,6 +12,8 @@ export const RefreshToken = async (
     });
     return response.data;
   } catch (error) {
+    window.localStorage.removeItem("userToken");
+    window.localStorage.removeItem("tokenGetTime");
     console.error(error);
     throw error;
   }

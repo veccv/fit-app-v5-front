@@ -2,18 +2,21 @@ import React, {
   createContext,
   FC,
   ReactNode,
+  useCallback,
   useEffect,
   useMemo,
   useState,
 } from "react";
 import { RefreshToken } from "@/utils/refresh-token";
 import { components } from "@/utils/generated-schema";
+import axios from "axios";
 
 interface FitProviderProps {
   userToken: components["schemas"]["AuthenticationResponse"] | null;
   setUserToken: (
     userToken: components["schemas"]["AuthenticationResponse"] | null,
   ) => void;
+  fetcher: (url: string) => Promise<any>;
 }
 
 const Context = createContext<FitProviderProps | undefined>(undefined);
@@ -23,6 +26,18 @@ const FitContext: FC<{ children: ReactNode }> = ({ children }) => {
     components["schemas"]["AuthenticationResponse"] | null
   >(null);
   const [tokenGetTime, setTokenGetTime] = useState<Date | null>(null);
+
+  const fetcher = useCallback(
+    async (url: string) => {
+      const res = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${userToken?.token}`,
+        },
+      });
+      return res.data;
+    },
+    [userToken],
+  );
 
   useEffect(() => {
     const localUserToken = window.localStorage.getItem("userToken");
@@ -57,6 +72,8 @@ const FitContext: FC<{ children: ReactNode }> = ({ children }) => {
         if (userToken) {
           setUserToken(userToken);
         } else {
+          window.localStorage.removeItem("userToken");
+          window.localStorage.removeItem("tokenGetTime");
           setUserToken(null);
           setTokenGetTime(null);
         }
@@ -74,6 +91,11 @@ const FitContext: FC<{ children: ReactNode }> = ({ children }) => {
             if (userToken) {
               setUserToken(userToken);
               setTokenGetTime(new Date());
+            } else {
+              window.localStorage.removeItem("userToken");
+              window.localStorage.removeItem("tokenGetTime");
+              setUserToken(null);
+              setTokenGetTime(null);
             }
           });
         }
@@ -86,8 +108,8 @@ const FitContext: FC<{ children: ReactNode }> = ({ children }) => {
   }, [userToken, tokenGetTime]);
 
   const value = useMemo(
-    () => ({ userToken, setUserToken }),
-    [userToken, setUserToken],
+    () => ({ userToken, setUserToken, fetcher }),
+    [userToken, setUserToken, fetcher],
   );
 
   return <Context.Provider value={value}>{children}</Context.Provider>;
