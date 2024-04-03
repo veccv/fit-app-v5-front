@@ -2,7 +2,7 @@ import axios, { AxiosError } from "axios";
 import { components } from "@/utils/generated-schema";
 
 export const UpdateData = async <T>(
-  requestType: "POST" | "PUT",
+  requestType: "POST" | "PUT" | "DELETE",
   endpoint: string,
   body?: any,
 ): Promise<T | undefined> => {
@@ -22,6 +22,14 @@ export const UpdateData = async <T>(
       return response.data;
     } else if (requestType === "PUT") {
       const response = await axios.put(endpoint, body, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + userToken.token,
+        },
+      });
+      return response.data;
+    } else if (requestType === "DELETE") {
+      const response = await axios.delete(endpoint, {
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer " + userToken.token,

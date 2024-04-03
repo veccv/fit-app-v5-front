@@ -2,7 +2,7 @@ import { CircularProgress, Stack, Text } from "@chakra-ui/react";
 import { components } from "@/utils/generated-schema";
 import useSWR from "swr";
 import { useFitContext } from "@/context/FitContext";
-import Product from "@/components/Product";
+import Product from "@/components/product/Product";
 
 interface ProductsListProps {
   query: string;

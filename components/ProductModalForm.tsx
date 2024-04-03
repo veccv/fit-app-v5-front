@@ -14,10 +14,17 @@ import { UpdateData } from "@/utils/updateData";
 import { components } from "@/utils/generated-schema";
 
 interface ProductModalFormProps {
+  product?: components["schemas"]["Product"];
   onClose: () => void;
 }
 
-const ProductModalForm = ({ onClose }: ProductModalFormProps) => {
+const ProductModalForm = ({ onClose, product }: ProductModalFormProps) => {
+  let query = "";
+  if (typeof window !== "undefined") {
+    const urlParams = new URLSearchParams(window.location.search);
+    query = urlParams.get("query") ?? "";
+  }
+
   const schema = z.object({
     name: z.string().min(1, "Name is required"),
     protein: z.string().min(1, "Protein is required"),
@@ -28,20 +35,23 @@ const ProductModalForm = ({ onClose }: ProductModalFormProps) => {
 
   return (
     <Formik
-      initialValues={{
-        name: "",
-        protein: "",
-        carbs: "",
-        fat: "",
-        sugar: "",
-      }}
+      initialValues={
+        product ?? {
+          name: "",
+          protein: "",
+          carbs: "",
+          fat: "",
+          sugar: "",
+        }
+      }
       onSubmit={(values) => {
         UpdateData<components["schemas"]["Product"]>(
-          "POST",
+          product ? "PUT" : "POST",
           "/api/api/v1/product",
           values as components["schemas"]["Product"],
         ).then(() => {
-          mutate("/api/api/v1/product/all").then(() => {
+          mutate(`/api/api/v1/product/search?query=${query}`).then((dd) => {
+            console.log(dd);
             onClose();
           });
         });
@@ -113,10 +123,28 @@ const ProductModalForm = ({ onClose }: ProductModalFormProps) => {
             </Field>
           </Stack>
           <ModalFooter>
+            {product && (
+              <Button
+                colorScheme="red"
+                mr={3}
+                onClick={() => {
+                  UpdateData(
+                    "DELETE",
+                    `/api/api/v1/product?id=${product.id}`,
+                  ).then(() => {
+                    mutate(`/api/api/v1/product/search?query=${query}`).then(
+                      onClose,
+                    );
+                  });
+                }}
+              >
+                Delete
+              </Button>
+            )}
             <Button colorScheme="blue" mr={3} onClick={onClose}>
               Close
             </Button>
-            <Button type="submit">Add product</Button>
+            <Button type="submit">{product ? "Update" : "Create"}</Button>
           </ModalFooter>
         </Form>
       )}

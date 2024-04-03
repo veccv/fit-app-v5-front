@@ -3,7 +3,7 @@ import { components } from "@/utils/generated-schema";
 
 export const RefreshToken = async (
   token: components["schemas"]["AuthenticationResponse"],
-): Promise<components["schemas"]["AuthenticationResponse"]> => {
+): Promise<components["schemas"]["AuthenticationResponse"] | undefined> => {
   try {
     const response = await axios.get("/api/api/v1/auth/refresh", {
       headers: {
@@ -15,6 +15,6 @@ export const RefreshToken = async (
     window.localStorage.removeItem("userToken");
     window.localStorage.removeItem("tokenGetTime");
     console.error(error);
-    throw error;
+    window.location.href = "/";
   }
 };
