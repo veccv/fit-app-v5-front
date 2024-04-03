@@ -1,6 +1,6 @@
 import { Stack, Text } from "@chakra-ui/react";
 import { components } from "@/utils/generated-schema";
-import ProductModal from "@/components/ProductModal";
+import ProductModal from "@/components/product/ProductModal";
 
 interface ProductProps {
   product: components["schemas"]["Product"];

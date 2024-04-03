@@ -10,7 +10,7 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { mutate } from "swr";
-import { UpdateData } from "@/utils/updateData";
+import { ManageData } from "@/utils/manageData";
 import { components } from "@/utils/generated-schema";
 
 interface ProductModalFormProps {
@@ -45,7 +45,7 @@ const ProductModalForm = ({ onClose, product }: ProductModalFormProps) => {
         }
       }
       onSubmit={(values) => {
-        UpdateData<components["schemas"]["Product"]>(
+        ManageData<components["schemas"]["Product"]>(
           product ? "PUT" : "POST",
           "/api/api/v1/product",
           values as components["schemas"]["Product"],
@@ -128,7 +128,7 @@ const ProductModalForm = ({ onClose, product }: ProductModalFormProps) => {
                 colorScheme="red"
                 mr={3}
                 onClick={() => {
-                  UpdateData(
+                  ManageData(
                     "DELETE",
                     `/api/api/v1/product?id=${product.id}`,
                   ).then(() => {

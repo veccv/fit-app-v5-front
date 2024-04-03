@@ -1,7 +1,7 @@
 import Page from "@/components/Page";
 import ProductsList from "@/components/product/ProductsList";
 import { Flex, Input, Stack } from "@chakra-ui/react";
-import ProductModal from "@/components/ProductModal";
+import ProductModal from "@/components/product/ProductModal";
 import { useEffect, useState } from "react";
 
 const Products = () => {

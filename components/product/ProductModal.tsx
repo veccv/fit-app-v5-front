@@ -9,7 +9,7 @@ import {
   ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/react";
-import ProductModalForm from "@/components/ProductModalForm";
+import ProductModalForm from "@/components/product/ProductModalForm";
 import { components } from "@/utils/generated-schema";
 import { IoDisc } from "react-icons/io5";
 
