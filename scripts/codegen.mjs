@@ -9,8 +9,8 @@ const codegen = async () => {
     const response = await got
         .post(`http://localhost:8080/api/v1/auth/authenticate`, {
             body: JSON.stringify({
-                "email": "test@test.pl",
-                "password": "test"
+                "email": "dd@dd.pl",
+                "password": "ddd"
             }),
             headers: {
                 'Content-Type': 'application/json'

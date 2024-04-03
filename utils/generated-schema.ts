@@ -14,6 +14,9 @@ export interface paths {
     put: operations["updateProduct"];
     post: operations["createProduct"];
   };
+  "/api/v1/migrate": {
+    put: operations["migrateProducts"];
+  };
   "/api/v1/auth/register": {
     post: operations["register"];
   };
@@ -25,6 +28,9 @@ export interface paths {
   };
   "/api/v1/product/all": {
     get: operations["getAllProducts"];
+  };
+  "/api/v1/auth/refresh": {
+    get: operations["refreshToken"];
   };
 }
 
@@ -52,11 +58,11 @@ export interface components {
       /** @enum {string} */
       role: "USER" | "ADMIN";
       enabled: boolean;
+      accountNonExpired: boolean;
+      accountNonLocked: boolean;
+      credentialsNonExpired: boolean;
       authorities: components["schemas"]["GrantedAuthority"][];
       username: string;
-      credentialsNonExpired: boolean;
-      accountNonLocked: boolean;
-      accountNonExpired: boolean;
     };
     UserDay: {
       /** Format: int32 */
@@ -75,6 +81,8 @@ export interface components {
       carbs: string;
       fat: string;
       sugar: string;
+      fitatuId: string;
+      calories: string;
     };
     RegisterRequest: {
       firstname: string;
@@ -88,6 +96,47 @@ export interface components {
     AuthenticationRequest: {
       email: string;
       password: string;
+    };
+    Pageable: {
+      /** Format: int32 */
+      page: number;
+      /** Format: int32 */
+      size: number;
+      sort: string[];
+    };
+    PageProduct: {
+      /** Format: int32 */
+      totalPages: number;
+      /** Format: int64 */
+      totalElements: number;
+      /** Format: int32 */
+      size: number;
+      content: components["schemas"]["Product"][];
+      /** Format: int32 */
+      number: number;
+      sort: components["schemas"]["SortObject"];
+      /** Format: int32 */
+      numberOfElements: number;
+      pageable: components["schemas"]["PageableObject"];
+      first: boolean;
+      last: boolean;
+      empty: boolean;
+    };
+    PageableObject: {
+      /** Format: int64 */
+      offset: number;
+      sort: components["schemas"]["SortObject"];
+      /** Format: int32 */
+      pageNumber: number;
+      /** Format: int32 */
+      pageSize: number;
+      paged: boolean;
+      unpaged: boolean;
+    };
+    SortObject: {
+      empty: boolean;
+      unsorted: boolean;
+      sorted: boolean;
     };
   };
   responses: never;
@@ -198,6 +247,14 @@ export interface operations {
       };
     };
   };
+  migrateProducts: {
+    responses: {
+      /** @description OK */
+      200: {
+        content: never;
+      };
+    };
+  };
   register: {
     requestBody: {
       content: {
@@ -239,11 +296,26 @@ export interface operations {
     };
   };
   getAllProducts: {
+    parameters: {
+      query: {
+        page: components["schemas"]["Pageable"];
+      };
+    };
     responses: {
       /** @description OK */
       200: {
         content: {
-          "*/*": components["schemas"]["Product"][];
+          "*/*": components["schemas"]["PageProduct"];
+        };
+      };
+    };
+  };
+  refreshToken: {
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "*/*": components["schemas"]["AuthenticationResponse"];
         };
       };
     };
