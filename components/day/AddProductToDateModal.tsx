@@ -18,6 +18,7 @@ import { useDisclosure } from "@chakra-ui/hooks";
 import { useState } from "react";
 import ProductsList from "@/components/product/ProductsList";
 import { components } from "@/utils/generated-schema";
+import { AiOutlineDelete } from "react-icons/ai";
 
 const AddProductToDateModal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -28,6 +29,12 @@ const AddProductToDateModal = () => {
 
   const addProduct = (product: components["schemas"]["Product"]) => {
     setProducts((prevProducts) => [...prevProducts, product]);
+  };
+
+  const removeProduct = (id: number) => {
+    setProducts((prevProducts) =>
+      prevProducts.filter((product) => product.id !== id),
+    );
   };
 
   return (
@@ -48,9 +55,20 @@ const AddProductToDateModal = () => {
                   </Flex>
                 )}
                 {products.map((product) => (
-                  <Flex {...flexStyle} key={product.id}>
+                  <Flex
+                    {...flexStyle}
+                    key={product.id}
+                    _hover={{
+                      cursor: "pointer",
+                    }}
+                  >
                     <Text>{product.name}</Text>
                     <Text>{product.weight}g</Text>
+                    <IconButton
+                      aria-label="Delete product"
+                      icon={<AiOutlineDelete />}
+                      onClick={() => removeProduct(product.id)}
+                    />
                   </Flex>
                 ))}
               </Stack>
@@ -84,4 +102,5 @@ const flexStyle = {
   border: "1px solid",
   p: "1em",
   justifyContent: "space-between",
+  alignItems: "center",
 };
