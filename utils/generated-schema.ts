@@ -13,6 +13,7 @@ export interface paths {
     get: operations["getProductById"];
     put: operations["updateProduct"];
     post: operations["createProduct"];
+    delete: operations["deleteProduct"];
   };
   "/api/v1/migrate": {
     put: operations["migrateProducts"];
@@ -23,8 +24,14 @@ export interface paths {
   "/api/v1/auth/authenticate": {
     post: operations["authenticate"];
   };
+  "/api/v1/users/day/date": {
+    get: operations["getDay_1"];
+  };
   "/api/v1/user": {
     get: operations["getUserInfo"];
+  };
+  "/api/v1/product/search": {
+    get: operations["searchProducts"];
   };
   "/api/v1/product/all": {
     get: operations["getAllProducts"];
@@ -45,33 +52,15 @@ export interface components {
       fat: string;
       sugar: string;
     };
-    GrantedAuthority: {
-      authority: string;
-    };
-    User: {
-      /** Format: uuid */
-      id: string;
-      lastname: string;
-      firstname: string;
-      email: string;
-      password: string;
-      /** @enum {string} */
-      role: "USER" | "ADMIN";
-      enabled: boolean;
-      accountNonExpired: boolean;
-      accountNonLocked: boolean;
-      credentialsNonExpired: boolean;
-      authorities: components["schemas"]["GrantedAuthority"][];
-      username: string;
-    };
     UserDay: {
       /** Format: int32 */
       id: number;
-      user: components["schemas"]["User"];
       /** Format: date */
       date: string;
       breakfastProducts: components["schemas"]["CustomProduct"][];
       lunchProducts: components["schemas"]["CustomProduct"][];
+      /** Format: uuid */
+      userId: string;
     };
     Product: {
       /** Format: int64 */
@@ -83,6 +72,7 @@ export interface components {
       sugar: string;
       fitatuId: string;
       calories: string;
+      weight: string;
     };
     RegisterRequest: {
       firstname: string;
@@ -96,6 +86,26 @@ export interface components {
     AuthenticationRequest: {
       email: string;
       password: string;
+    };
+    GrantedAuthority: {
+      authority: string;
+    };
+    User: {
+      /** Format: uuid */
+      id: string;
+      lastname: string;
+      firstname: string;
+      email: string;
+      password: string;
+      /** @enum {string} */
+      role: "USER" | "ADMIN";
+      userDays: components["schemas"]["UserDay"][];
+      enabled: boolean;
+      authorities: components["schemas"]["GrantedAuthority"][];
+      username: string;
+      accountNonExpired: boolean;
+      accountNonLocked: boolean;
+      credentialsNonExpired: boolean;
     };
     Pageable: {
       /** Format: int32 */
@@ -126,17 +136,17 @@ export interface components {
       /** Format: int64 */
       offset: number;
       sort: components["schemas"]["SortObject"];
+      paged: boolean;
+      unpaged: boolean;
       /** Format: int32 */
       pageNumber: number;
       /** Format: int32 */
       pageSize: number;
-      paged: boolean;
-      unpaged: boolean;
     };
     SortObject: {
       empty: boolean;
-      unsorted: boolean;
       sorted: boolean;
+      unsorted: boolean;
     };
   };
   responses: never;
@@ -247,6 +257,19 @@ export interface operations {
       };
     };
   };
+  deleteProduct: {
+    parameters: {
+      query: {
+        id: number;
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: never;
+      };
+    };
+  };
   migrateProducts: {
     responses: {
       /** @description OK */
@@ -285,12 +308,43 @@ export interface operations {
       };
     };
   };
+  getDay_1: {
+    parameters: {
+      query: {
+        date: string;
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "*/*": components["schemas"]["UserDay"];
+        };
+      };
+    };
+  };
   getUserInfo: {
     responses: {
       /** @description OK */
       200: {
         content: {
           "*/*": components["schemas"]["User"];
+        };
+      };
+    };
+  };
+  searchProducts: {
+    parameters: {
+      query: {
+        query: string;
+        page: components["schemas"]["Pageable"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "*/*": components["schemas"]["PageProduct"];
         };
       };
     };

@@ -4,7 +4,6 @@ import {
   CircularProgress,
   Divider,
   Flex,
-  IconButton,
   Input,
   Stack,
   Text,
@@ -14,7 +13,7 @@ import { components } from "@/utils/generated-schema";
 import useSWR, { mutate } from "swr";
 import { ManageData } from "@/utils/manageData";
 import { useFitContext } from "@/context/FitContext";
-import { CiEdit } from "react-icons/ci";
+import AddProductToDateModal from "@/components/day/AddProductToDateModal";
 
 const HomePage = () => {
   const { fetcher } = useFitContext();
@@ -33,9 +32,9 @@ const HomePage = () => {
 
   return (
     <Page>
-      <Stack w="60%">
-        <Stack w="40% ">
-          <Button>Dodaj produkt</Button>
+      <Stack w="40%">
+        <Stack w="40%">
+          <Button>Add product</Button>
         </Stack>
         <Stack border="1px solid" p="1em">
           <Input
@@ -78,7 +77,7 @@ const HomePage = () => {
                   alignItems="center"
                 >
                   <Text>Śniadanie</Text>
-                  <IconButton aria-label="Search database" icon={<CiEdit />} />
+                  <AddProductToDateModal />
                 </Stack>
                 <Stack
                   direction="row"
@@ -88,7 +87,7 @@ const HomePage = () => {
                   alignItems="center"
                 >
                   <Text>Obiad</Text>
-                  <IconButton aria-label="Search database" icon={<CiEdit />} />
+                  <AddProductToDateModal />
                 </Stack>
               </Stack>
             )}

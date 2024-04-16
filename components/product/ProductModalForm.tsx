@@ -31,6 +31,7 @@ const ProductModalForm = ({ onClose, product }: ProductModalFormProps) => {
     carbs: z.string().min(1, "Carbs is required"),
     fat: z.string().min(1, "Fat is required"),
     sugar: z.string().min(1, "Sugar is required"),
+    weight: z.string().min(1, "Weight is required"),
   });
 
   return (
@@ -42,6 +43,7 @@ const ProductModalForm = ({ onClose, product }: ProductModalFormProps) => {
           carbs: "",
           fat: "",
           sugar: "",
+          weight: "",
         }
       }
       onSubmit={(values) => {
@@ -118,6 +120,17 @@ const ProductModalForm = ({ onClose, product }: ProductModalFormProps) => {
                   <FormLabel>Sugar:</FormLabel>
                   <Input {...field} placeholder="sugar" />
                   <FormErrorMessage>{form.errors.sugar}</FormErrorMessage>
+                </FormControl>
+              )}
+            </Field>
+            <Field name="weight">
+              {({ field, form }: { field: any; form: any }) => (
+                <FormControl
+                  isInvalid={form.errors.weight && form.touched.weight}
+                >
+                  <FormLabel>Weight:</FormLabel>
+                  <Input {...field} placeholder="weight" />
+                  <FormErrorMessage>{form.errors.weight}</FormErrorMessage>
                 </FormControl>
               )}
             </Field>
