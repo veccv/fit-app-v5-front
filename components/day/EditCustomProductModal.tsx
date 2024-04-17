@@ -1,3 +1,4 @@
+import { components } from "@/utils/generated-schema";
 import { z, ZodError } from "zod";
 import { Field, Form, Formik } from "formik";
 import {
@@ -9,31 +10,32 @@ import {
   ModalFooter,
   Stack,
 } from "@chakra-ui/react";
-import { mutate } from "swr";
-import { ManageData } from "@/utils/manageData";
-import { components } from "@/utils/generated-schema";
+import { round } from "@popperjs/core/lib/utils/math";
 
-interface ProductModalFormProps {
-  product?: components["schemas"]["Product"];
+interface EditCustomProductProp {
+  product: components["schemas"]["Product"];
+  products: components["schemas"]["Product"][];
+  index: number;
   onClose: () => void;
+  setProducts: (products: components["schemas"]["Product"][]) => void;
 }
 
-const ProductModalForm = ({ onClose, product }: ProductModalFormProps) => {
-  let query = "";
-  if (typeof window !== "undefined") {
-    const urlParams = new URLSearchParams(window.location.search);
-    query = urlParams.get("query") ?? "";
-  }
-
+const EditCustomProductModal = ({
+  product,
+  index,
+  onClose,
+  setProducts,
+  products,
+}: EditCustomProductProp) => {
   const schema = z.object({
-    name: z.string().min(1, "Name is required"),
-    protein: z.string().min(1, "Protein is required"),
-    carbs: z.string().min(1, "Carbs is required"),
-    fat: z.string().min(1, "Fat is required"),
-    sugar: z.string().min(1, "Sugar is required"),
     weight: z.string().min(1, "Weight is required"),
-    calories: z.string().min(1, "Calories is required"),
   });
+
+  const calculate = (weight: number, elementToCalculate: number) => {
+    if (weight && elementToCalculate)
+      return round((weight / 100) * elementToCalculate);
+    return 0;
+  };
 
   return (
     <Formik
@@ -49,16 +51,14 @@ const ProductModalForm = ({ onClose, product }: ProductModalFormProps) => {
         }
       }
       onSubmit={(values) => {
-        ManageData<components["schemas"]["Product"]>(
-          product ? "PUT" : "POST",
-          "/api/api/v1/product",
-          values as components["schemas"]["Product"],
-        ).then(() => {
-          mutate(`/api/api/v1/product/search?query=${query}`).then((dd) => {
-            console.log(dd);
-            onClose();
-          });
-        });
+        if (product) {
+          const newProducts = [...products];
+          newProducts[index] = values;
+          setProducts(newProducts);
+        } else {
+          setProducts([...products, values]);
+        }
+        onClose();
       }}
       validate={(values) => {
         try {
@@ -74,22 +74,13 @@ const ProductModalForm = ({ onClose, product }: ProductModalFormProps) => {
       {() => (
         <Form>
           <Stack gap="2em">
-            <Field name="name">
-              {({ field, form }: { field: any; form: any }) => (
-                <FormControl isInvalid={form.errors.name && form.touched.name}>
-                  <FormLabel>Product name:</FormLabel>
-                  <Input {...field} placeholder="name" />
-                  <FormErrorMessage>{form.errors.name}</FormErrorMessage>
-                </FormControl>
-              )}
-            </Field>
             <Field name="protein">
               {({ field, form }: { field: any; form: any }) => (
                 <FormControl
                   isInvalid={form.errors.protein && form.touched.protein}
                 >
                   <FormLabel>Protein:</FormLabel>
-                  <Input {...field} placeholder="protein" />
+                  <Input disabled {...field} placeholder="protein" />
                   <FormErrorMessage>{form.errors.protein}</FormErrorMessage>
                 </FormControl>
               )}
@@ -100,7 +91,7 @@ const ProductModalForm = ({ onClose, product }: ProductModalFormProps) => {
                   isInvalid={form.errors.carbs && form.touched.carbs}
                 >
                   <FormLabel>Carbs:</FormLabel>
-                  <Input {...field} placeholder="carbs" />
+                  <Input disabled {...field} placeholder="carbs" />
                   <FormErrorMessage>{form.errors.carbs}</FormErrorMessage>
                 </FormControl>
               )}
@@ -109,7 +100,7 @@ const ProductModalForm = ({ onClose, product }: ProductModalFormProps) => {
               {({ field, form }: { field: any; form: any }) => (
                 <FormControl isInvalid={form.errors.fat && form.touched.fat}>
                   <FormLabel>Fat:</FormLabel>
-                  <Input {...field} placeholder="fat" />
+                  <Input disabled {...field} placeholder="fat" />
                   <FormErrorMessage>{form.errors.fat}</FormErrorMessage>
                 </FormControl>
               )}
@@ -120,7 +111,7 @@ const ProductModalForm = ({ onClose, product }: ProductModalFormProps) => {
                   isInvalid={form.errors.sugar && form.touched.sugar}
                 >
                   <FormLabel>Sugar:</FormLabel>
-                  <Input {...field} placeholder="sugar" />
+                  <Input disabled {...field} placeholder="sugar" />
                   <FormErrorMessage>{form.errors.sugar}</FormErrorMessage>
                 </FormControl>
               )}
@@ -131,7 +122,34 @@ const ProductModalForm = ({ onClose, product }: ProductModalFormProps) => {
                   isInvalid={form.errors.weight && form.touched.weight}
                 >
                   <FormLabel>Weight:</FormLabel>
-                  <Input {...field} placeholder="weight" />
+                  <Input
+                    {...field}
+                    placeholder="weight"
+                    onChange={(e) => {
+                      const weight = e.target.value;
+                      form.setFieldValue("weight", weight);
+                      form.setFieldValue(
+                        "protein",
+                        calculate(parseInt(weight), parseInt(product.protein)),
+                      );
+                      form.setFieldValue(
+                        "carbs",
+                        calculate(parseInt(weight), parseInt(product.carbs)),
+                      );
+                      form.setFieldValue(
+                        "fat",
+                        calculate(parseInt(weight), parseInt(product.fat)),
+                      );
+                      form.setFieldValue(
+                        "sugar",
+                        calculate(parseInt(weight), parseInt(product.sugar)),
+                      );
+                      form.setFieldValue(
+                        "calories",
+                        calculate(parseInt(weight), parseInt(product.calories)),
+                      );
+                    }}
+                  />
                   <FormErrorMessage>{form.errors.weight}</FormErrorMessage>
                 </FormControl>
               )}
@@ -142,7 +160,7 @@ const ProductModalForm = ({ onClose, product }: ProductModalFormProps) => {
                   isInvalid={form.errors.calories && form.touched.calories}
                 >
                   <FormLabel>Calories:</FormLabel>
-                  <Input {...field} placeholder="calories" />
+                  <Input disabled {...field} placeholder="calories" />
                   <FormErrorMessage>{form.errors.calories}</FormErrorMessage>
                 </FormControl>
               )}
@@ -154,14 +172,14 @@ const ProductModalForm = ({ onClose, product }: ProductModalFormProps) => {
                 colorScheme="red"
                 mr={3}
                 onClick={() => {
-                  ManageData(
-                    "DELETE",
-                    `/api/api/v1/product?id=${product.id}`,
-                  ).then(() => {
-                    mutate(`/api/api/v1/product/search?query=${query}`).then(
-                      onClose,
-                    );
-                  });
+                  // ManageData(
+                  //   "DELETE",
+                  //   `/api/api/v1/product?id=${product.id}`,
+                  // ).then(() => {
+                  //   mutate(`/api/api/v1/product/search?query=${query}`).then(
+                  //     onClose,
+                  //   );
+                  // });
                 }}
               >
                 Delete
@@ -178,4 +196,4 @@ const ProductModalForm = ({ onClose, product }: ProductModalFormProps) => {
   );
 };
 
-export default ProductModalForm;
+export default EditCustomProductModal;

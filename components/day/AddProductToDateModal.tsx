@@ -18,7 +18,7 @@ import { useDisclosure } from "@chakra-ui/hooks";
 import { useState } from "react";
 import ProductsList from "@/components/product/ProductsList";
 import { components } from "@/utils/generated-schema";
-import { AiOutlineDelete } from "react-icons/ai";
+import EditCustomProduct from "@/components/day/EditCustomProduct";
 
 const AddProductToDateModal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -29,12 +29,6 @@ const AddProductToDateModal = () => {
 
   const addProduct = (product: components["schemas"]["Product"]) => {
     setProducts((prevProducts) => [...prevProducts, product]);
-  };
-
-  const removeProduct = (id: number) => {
-    setProducts((prevProducts) =>
-      prevProducts.filter((product) => product.id !== id),
-    );
   };
 
   return (
@@ -54,22 +48,14 @@ const AddProductToDateModal = () => {
                     <Text>Add something below</Text>
                   </Flex>
                 )}
-                {products.map((product) => (
-                  <Flex
-                    {...flexStyle}
+                {products.map((product, index) => (
+                  <EditCustomProduct
                     key={product.id}
-                    _hover={{
-                      cursor: "pointer",
-                    }}
-                  >
-                    <Text>{product.name}</Text>
-                    <Text>{product.weight}g</Text>
-                    <IconButton
-                      aria-label="Delete product"
-                      icon={<AiOutlineDelete />}
-                      onClick={() => removeProduct(product.id)}
-                    />
-                  </Flex>
+                    product={product}
+                    index={index}
+                    setProducts={setProducts}
+                    products={products}
+                  />
                 ))}
               </Stack>
               <Stack gap="0.5em">
