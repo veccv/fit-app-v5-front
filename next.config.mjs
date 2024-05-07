@@ -1,4 +1,13 @@
 const env = process.env.ENV;
+let destination;
+
+if (env === "dev") {
+    destination = process.env.DEV_DESTINATION;
+} else if (env === "dev2") {
+    destination = process.env.DEV2_DESTINATION;
+} else {
+    destination = process.env.PROD_DESTINATION;
+}
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -7,10 +16,7 @@ const nextConfig = {
         return [
             {
                 source: "/api/:path*",
-                destination:
-                    env === "dev"
-                        ? process.env.DEV_DESTINATION
-                        : env === "prod" && process.env.PROD_DESTINATION,
+                destination: destination,
             },
         ];
     },
