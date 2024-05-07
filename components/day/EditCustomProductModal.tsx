@@ -10,7 +10,6 @@ import {
   ModalFooter,
   Stack,
 } from "@chakra-ui/react";
-import { round } from "@popperjs/core/lib/utils/math";
 
 interface EditCustomProductProp {
   product: components["schemas"]["Product"];
@@ -20,6 +19,16 @@ interface EditCustomProductProp {
   setProducts: (products: components["schemas"]["Product"][]) => void;
 }
 
+const schema = z.object({
+  weight: z.string().min(1, "Weight is required"),
+});
+
+const calculate = (weight: number, elementToCalculate: number) => {
+  if (weight && elementToCalculate)
+    return Math.round((weight / 100) * elementToCalculate);
+  return 0;
+};
+
 const EditCustomProductModal = ({
   product,
   index,
@@ -27,16 +36,6 @@ const EditCustomProductModal = ({
   setProducts,
   products,
 }: EditCustomProductProp) => {
-  const schema = z.object({
-    weight: z.string().min(1, "Weight is required"),
-  });
-
-  const calculate = (weight: number, elementToCalculate: number) => {
-    if (weight && elementToCalculate)
-      return round((weight / 100) * elementToCalculate);
-    return 0;
-  };
-
   return (
     <Formik
       initialValues={
@@ -168,20 +167,7 @@ const EditCustomProductModal = ({
           </Stack>
           <ModalFooter>
             {product && (
-              <Button
-                colorScheme="red"
-                mr={3}
-                onClick={() => {
-                  // ManageData(
-                  //   "DELETE",
-                  //   `/api/api/v1/product?id=${product.id}`,
-                  // ).then(() => {
-                  //   mutate(`/api/api/v1/product/search?query=${query}`).then(
-                  //     onClose,
-                  //   );
-                  // });
-                }}
-              >
+              <Button colorScheme="red" mr={3} onClick={() => {}}>
                 Delete
               </Button>
             )}
