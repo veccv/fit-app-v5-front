@@ -13,7 +13,7 @@ const ProductsList = ({ query, addProduct }: ProductsListProps) => {
   const { fetcher } = useFitContext();
   const { data: products, error } = useSWR<
     components["schemas"]["PageProduct"]
-  >(`/api/api/v1/product/search?query=${query}&limit=5`, fetcher);
+  >(`/api/api/v1/product/search?query=${query}&size=5`, fetcher);
 
   if (error) return <Text>Failed to load</Text>;
   if (!products) return <CircularProgress isIndeterminate color="green.300" />;

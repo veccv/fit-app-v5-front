@@ -3,6 +3,7 @@ import { z, ZodError } from "zod";
 import { Field, Form, Formik } from "formik";
 import {
   Button,
+  CircularProgress,
   FormControl,
   FormErrorMessage,
   FormLabel,
@@ -10,6 +11,8 @@ import {
   ModalFooter,
   Stack,
 } from "@chakra-ui/react";
+import { useFitContext } from "@/context/FitContext";
+import useSWR from "swr";
 
 interface EditCustomProductProp {
   product: components["schemas"]["Product"];
@@ -36,6 +39,15 @@ const EditCustomProductModal = ({
   setProducts,
   products,
 }: EditCustomProductProp) => {
+  const { fetcher } = useFitContext();
+  const { data: originalProduct } = useSWR<components["schemas"]["Product"]>(
+    `/api/api/v1/product?id=${product.id}`,
+    fetcher,
+  );
+
+  if (!originalProduct)
+    return <CircularProgress isIndeterminate color="green.300" />;
+
   return (
     <Formik
       initialValues={
@@ -129,23 +141,38 @@ const EditCustomProductModal = ({
                       form.setFieldValue("weight", weight);
                       form.setFieldValue(
                         "protein",
-                        calculate(parseInt(weight), parseInt(product.protein)),
+                        calculate(
+                          parseInt(weight),
+                          parseInt(originalProduct.protein),
+                        ),
                       );
                       form.setFieldValue(
                         "carbs",
-                        calculate(parseInt(weight), parseInt(product.carbs)),
+                        calculate(
+                          parseInt(weight),
+                          parseInt(originalProduct.carbs),
+                        ),
                       );
                       form.setFieldValue(
                         "fat",
-                        calculate(parseInt(weight), parseInt(product.fat)),
+                        calculate(
+                          parseInt(weight),
+                          parseInt(originalProduct.fat),
+                        ),
                       );
                       form.setFieldValue(
                         "sugar",
-                        calculate(parseInt(weight), parseInt(product.sugar)),
+                        calculate(
+                          parseInt(weight),
+                          parseInt(originalProduct.sugar),
+                        ),
                       );
                       form.setFieldValue(
                         "calories",
-                        calculate(parseInt(weight), parseInt(product.calories)),
+                        calculate(
+                          parseInt(weight),
+                          parseInt(originalProduct.calories),
+                        ),
                       );
                     }}
                   />
