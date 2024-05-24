@@ -194,7 +194,15 @@ const EditCustomProductModal = ({
           </Stack>
           <ModalFooter>
             {product && (
-              <Button colorScheme="red" mr={3} onClick={() => {}}>
+              <Button
+                colorScheme="red"
+                mr={3}
+                onClick={() => {
+                  const newProducts = products.filter((_, i) => i !== index);
+                  setProducts(newProducts);
+                  onClose();
+                }}
+              >
                 Delete
               </Button>
             )}
