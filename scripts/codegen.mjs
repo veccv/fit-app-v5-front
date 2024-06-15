@@ -7,10 +7,10 @@ const {writeFile} = promises;
 
 const codegen = async () => {
     const response = await got
-        .post(`http://localhost:8080/api/v1/auth/authenticate`, {
+        .post(`http://localhost:7777/api/v1/auth/authenticate`, {
             body: JSON.stringify({
-                "email": "dd@dd.pl",
-                "password": "ddd"
+                "email": "test",
+                "password": "test"
             }),
             headers: {
                 'Content-Type': 'application/json'
@@ -20,7 +20,7 @@ const codegen = async () => {
 
     const {token} = response
 
-    const content = await got(`http://localhost:8080/v3/api-docs`, {
+    const content = await got(`http://localhost:7777/v3/api-docs`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },

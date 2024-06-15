@@ -19,8 +19,20 @@ import { useState } from "react";
 import ProductsList from "@/components/product/ProductsList";
 import { components } from "@/utils/generated-schema";
 import EditCustomProduct from "@/components/day/EditCustomProduct";
+import { ManageData } from "@/utils/manageData";
+import { mutate } from "swr";
 
-const AddProductToDateModal = () => {
+interface AddProductToDateModalProps {
+  userDay: components["schemas"]["UserDay"];
+  dayTime: "BREAKFAST" | "LUNCH";
+  date: string;
+}
+
+const AddProductToDateModal = ({
+  userDay,
+  dayTime,
+  date,
+}: AddProductToDateModalProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [query, setQuery] = useState("");
   const [products, setProducts] = useState<components["schemas"]["Product"][]>(
@@ -29,6 +41,17 @@ const AddProductToDateModal = () => {
 
   const addProduct = (product: components["schemas"]["Product"]) => {
     setProducts((prevProducts) => [...prevProducts, product]);
+  };
+
+  const updateDay = async () => {
+    ManageData(
+      "PUT",
+      `api/api/v1/users/day/products?userDayId=${userDay.id}&dayTime=${dayTime}`,
+      products,
+    ).then(() => {
+      mutate(`api/api/v1/users/day/date?date=${date}`);
+      onClose();
+    });
   };
 
   return (
@@ -71,7 +94,7 @@ const AddProductToDateModal = () => {
             </Stack>
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="blue" onClick={onClose}>
+            <Button colorScheme="blue" onClick={updateDay}>
               Add selected products
             </Button>
           </ModalFooter>

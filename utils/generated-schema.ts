@@ -9,6 +9,9 @@ export interface paths {
     put: operations["addProductToDay"];
     post: operations["createUserDay"];
   };
+  "/api/v1/users/day/products": {
+    put: operations["addProductsToDay"];
+  };
   "/api/v1/product": {
     get: operations["getProductById"];
     put: operations["updateProduct"];
@@ -51,16 +54,18 @@ export interface components {
       carbs: string;
       fat: string;
       sugar: string;
+      weight: string;
+      calories: string;
     };
     UserDay: {
       /** Format: int32 */
       id: number;
       /** Format: date */
       date: string;
+      /** Format: int64 */
+      userId: number;
       breakfastProducts: components["schemas"]["CustomProduct"][];
       lunchProducts: components["schemas"]["CustomProduct"][];
-      /** Format: uuid */
-      userId: string;
     };
     Product: {
       /** Format: int64 */
@@ -91,21 +96,20 @@ export interface components {
       authority: string;
     };
     User: {
-      /** Format: uuid */
-      id: string;
+      /** Format: int64 */
+      id: number;
       lastname: string;
       firstname: string;
       email: string;
       password: string;
       /** @enum {string} */
       role: "USER" | "ADMIN";
-      userDays: components["schemas"]["UserDay"][];
       enabled: boolean;
-      authorities: components["schemas"]["GrantedAuthority"][];
-      username: string;
       accountNonExpired: boolean;
       accountNonLocked: boolean;
       credentialsNonExpired: boolean;
+      authorities: components["schemas"]["GrantedAuthority"][];
+      username: string;
     };
     Pageable: {
       /** Format: int32 */
@@ -136,12 +140,12 @@ export interface components {
       /** Format: int64 */
       offset: number;
       sort: components["schemas"]["SortObject"];
-      paged: boolean;
-      unpaged: boolean;
       /** Format: int32 */
       pageNumber: number;
       /** Format: int32 */
       pageSize: number;
+      paged: boolean;
+      unpaged: boolean;
     };
     SortObject: {
       empty: boolean;
@@ -201,6 +205,27 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": string;
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "*/*": components["schemas"]["UserDay"];
+        };
+      };
+    };
+  };
+  addProductsToDay: {
+    parameters: {
+      query: {
+        userDayId: number;
+        dayTime: "BREAKFAST" | "LUNCH";
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CustomProduct"][];
       };
     };
     responses: {
