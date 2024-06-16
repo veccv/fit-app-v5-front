@@ -13,7 +13,7 @@ import { components } from "@/utils/generated-schema";
 import useSWR, { mutate } from "swr";
 import { ManageData } from "@/utils/manageData";
 import { useFitContext } from "@/context/FitContext";
-import AddProductToDateModal from "@/components/day/AddProductToDateModal";
+import DayTime from "@/components/day/DayTime";
 
 const HomePage = () => {
   const { fetcher } = useFitContext();
@@ -68,62 +68,8 @@ const HomePage = () => {
               </Stack>
             ) : (
               <Stack>
-                <Stack
-                  w="100%"
-                  p="0.5em"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  border="0.5px solid"
-                  gap="1em"
-                >
-                  <Stack
-                    direction="row"
-                    w="100%"
-                    justifyContent="space-between"
-                    alignItems="center"
-                  >
-                    <Text>Breakfast</Text>
-                    <AddProductToDateModal
-                      date={date}
-                      userDay={userDay!}
-                      dayTime="BREAKFAST"
-                    />
-                  </Stack>
-                  <Stack w="100%" gap="0" px="1em" alignItems="center">
-                    {userDay?.breakfastProducts.map((product, i) => (
-                      <Stack
-                        key={product.name}
-                        direction="row"
-                        w="100%"
-                        justifyContent="space-between"
-                        alignItems="center"
-                        bgColor={i % 2 === 0 ? "gray.100" : "whitesmoke"}
-                        p="0.5em"
-                      >
-                        <Text fontWeight="bold">
-                          {product.name} ({product.weight}g)
-                        </Text>
-                        <Text fontSize="small">C: {product.calories}g</Text>
-                        <Text fontSize="small">F: {product.fat}g</Text>
-                        <Text fontSize="small">P: {product.protein}g</Text>
-                      </Stack>
-                    ))}
-                  </Stack>
-                </Stack>
-                <Stack
-                  direction="row"
-                  w="100%"
-                  px="1em"
-                  justifyContent="space-between"
-                  alignItems="center"
-                >
-                  <Text>Lunch</Text>
-                  <AddProductToDateModal
-                    date={date}
-                    userDay={userDay!}
-                    dayTime="LUNCH"
-                  />
-                </Stack>
+                <DayTime date={date} userDay={userDay} dayTime="BREAKFAST" />
+                <DayTime date={date} userDay={userDay} dayTime="LUNCH" />
               </Stack>
             )}
           </Stack>
