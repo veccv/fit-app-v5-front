@@ -35,9 +35,6 @@ const HomePage = () => {
   return (
     <Page>
       <Stack w="40%">
-        <Stack w="40%">
-          <Button>Add product</Button>
-        </Stack>
         <Stack border="1px solid" p="1em">
           <Input
             placeholder="Select Date and Time"
@@ -72,18 +69,46 @@ const HomePage = () => {
             ) : (
               <Stack>
                 <Stack
-                  direction="row"
                   w="100%"
-                  px="1em"
+                  p="0.5em"
                   justifyContent="space-between"
                   alignItems="center"
+                  border="0.5px solid"
+                  gap="1em"
                 >
-                  <Text>Śniadanie</Text>
-                  <AddProductToDateModal
-                    date={date}
-                    userDay={userDay!}
-                    dayTime="BREAKFAST"
-                  />
+                  <Stack
+                    direction="row"
+                    w="100%"
+                    justifyContent="space-between"
+                    alignItems="center"
+                  >
+                    <Text>Breakfast</Text>
+                    <AddProductToDateModal
+                      date={date}
+                      userDay={userDay!}
+                      dayTime="BREAKFAST"
+                    />
+                  </Stack>
+                  <Stack w="100%" gap="0" px="1em" alignItems="center">
+                    {userDay?.breakfastProducts.map((product, i) => (
+                      <Stack
+                        key={product.name}
+                        direction="row"
+                        w="100%"
+                        justifyContent="space-between"
+                        alignItems="center"
+                        bgColor={i % 2 === 0 ? "gray.100" : "whitesmoke"}
+                        p="0.5em"
+                      >
+                        <Text fontWeight="bold">
+                          {product.name} ({product.weight}g)
+                        </Text>
+                        <Text fontSize="small">C: {product.calories}g</Text>
+                        <Text fontSize="small">F: {product.fat}g</Text>
+                        <Text fontSize="small">P: {product.protein}g</Text>
+                      </Stack>
+                    ))}
+                  </Stack>
                 </Stack>
                 <Stack
                   direction="row"
@@ -92,7 +117,7 @@ const HomePage = () => {
                   justifyContent="space-between"
                   alignItems="center"
                 >
-                  <Text>Obiad</Text>
+                  <Text>Lunch</Text>
                   <AddProductToDateModal
                     date={date}
                     userDay={userDay!}
