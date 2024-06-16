@@ -23,8 +23,6 @@ const HomePage = () => {
     fetcher,
   );
 
-  console.log(userDay);
-
   if (error && error.code === "ERR_BAD_RESPONSE")
     return (
       <Flex w="100%" alignItems="center" justifyContent="center" py="5em">
