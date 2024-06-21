@@ -1,8 +1,8 @@
 import axios, { AxiosError } from "axios";
 import { components } from "@/utils/generated-schema";
 
-export const UpdateData = async <T>(
-  requestType: "POST" | "PUT" | "DELETE",
+export const ManageData = async <T>(
+  requestType: "POST" | "PUT" | "DELETE" | "GET",
   endpoint: string,
   body?: any,
 ): Promise<T | undefined> => {
@@ -30,6 +30,14 @@ export const UpdateData = async <T>(
       return response.data;
     } else if (requestType === "DELETE") {
       const response = await axios.delete(endpoint, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + userToken.token,
+        },
+      });
+      return response.data;
+    } else if (requestType === "GET") {
+      const response = await axios.get(endpoint, {
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer " + userToken.token,

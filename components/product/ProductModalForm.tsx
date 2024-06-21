@@ -10,7 +10,7 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { mutate } from "swr";
-import { UpdateData } from "@/utils/updateData";
+import { ManageData } from "@/utils/manageData";
 import { components } from "@/utils/generated-schema";
 
 interface ProductModalFormProps {
@@ -31,6 +31,8 @@ const ProductModalForm = ({ onClose, product }: ProductModalFormProps) => {
     carbs: z.string().min(1, "Carbs is required"),
     fat: z.string().min(1, "Fat is required"),
     sugar: z.string().min(1, "Sugar is required"),
+    weight: z.string().min(1, "Weight is required"),
+    calories: z.string().min(1, "Calories is required"),
   });
 
   return (
@@ -42,10 +44,12 @@ const ProductModalForm = ({ onClose, product }: ProductModalFormProps) => {
           carbs: "",
           fat: "",
           sugar: "",
+          weight: "",
+          calories: "",
         }
       }
       onSubmit={(values) => {
-        UpdateData<components["schemas"]["Product"]>(
+        ManageData<components["schemas"]["Product"]>(
           product ? "PUT" : "POST",
           "/api/api/v1/product",
           values as components["schemas"]["Product"],
@@ -121,6 +125,28 @@ const ProductModalForm = ({ onClose, product }: ProductModalFormProps) => {
                 </FormControl>
               )}
             </Field>
+            <Field name="weight">
+              {({ field, form }: { field: any; form: any }) => (
+                <FormControl
+                  isInvalid={form.errors.weight && form.touched.weight}
+                >
+                  <FormLabel>Weight:</FormLabel>
+                  <Input {...field} placeholder="weight" />
+                  <FormErrorMessage>{form.errors.weight}</FormErrorMessage>
+                </FormControl>
+              )}
+            </Field>
+            <Field name="calories">
+              {({ field, form }: { field: any; form: any }) => (
+                <FormControl
+                  isInvalid={form.errors.calories && form.touched.calories}
+                >
+                  <FormLabel>Calories:</FormLabel>
+                  <Input {...field} placeholder="calories" />
+                  <FormErrorMessage>{form.errors.calories}</FormErrorMessage>
+                </FormControl>
+              )}
+            </Field>
           </Stack>
           <ModalFooter>
             {product && (
@@ -128,7 +154,7 @@ const ProductModalForm = ({ onClose, product }: ProductModalFormProps) => {
                 colorScheme="red"
                 mr={3}
                 onClick={() => {
-                  UpdateData(
+                  ManageData(
                     "DELETE",
                     `/api/api/v1/product?id=${product.id}`,
                   ).then(() => {
