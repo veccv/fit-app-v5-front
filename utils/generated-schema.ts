@@ -6,11 +6,14 @@
 export interface paths {
   "/api/v1/users/day": {
     get: operations["getDay"];
-    put: operations["addProductToDay"];
+    put: operations["updateDay"];
     post: operations["createUserDay"];
   };
   "/api/v1/users/day/products": {
     put: operations["addProductsToDay"];
+  };
+  "/api/v1/users/day/product": {
+    put: operations["addProductToDay"];
   };
   "/api/v1/product": {
     get: operations["getProductById"];
@@ -56,6 +59,8 @@ export interface components {
       sugar: string;
       weight: string;
       calories: string;
+      /** Format: int64 */
+      originProductId: number;
     };
     UserDay: {
       /** Format: int32 */
@@ -149,8 +154,8 @@ export interface components {
     };
     SortObject: {
       empty: boolean;
-      sorted: boolean;
       unsorted: boolean;
+      sorted: boolean;
     };
   };
   responses: never;
@@ -180,16 +185,10 @@ export interface operations {
       };
     };
   };
-  addProductToDay: {
-    parameters: {
-      query: {
-        userDayId: number;
-        dayTime: "BREAKFAST" | "LUNCH";
-      };
-    };
+  updateDay: {
     requestBody: {
       content: {
-        "application/json": components["schemas"]["CustomProduct"];
+        "application/json": components["schemas"]["UserDay"];
       };
     };
     responses: {
@@ -226,6 +225,27 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": components["schemas"]["CustomProduct"][];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "*/*": components["schemas"]["UserDay"];
+        };
+      };
+    };
+  };
+  addProductToDay: {
+    parameters: {
+      query: {
+        userDayId: number;
+        dayTime: "BREAKFAST" | "LUNCH";
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CustomProduct"];
       };
     };
     responses: {

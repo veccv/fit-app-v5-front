@@ -16,7 +16,7 @@ import { BiPlus } from "react-icons/bi";
 
 interface ProductModalProps {
   product?: components["schemas"]["Product"];
-  addProduct?: (product: components["schemas"]["Product"]) => void;
+  addProduct?: (product: components["schemas"]["CustomProduct"]) => void;
 }
 
 const ProductModal = ({ product, addProduct }: ProductModalProps) => {
@@ -27,7 +27,12 @@ const ProductModal = ({ product, addProduct }: ProductModalProps) => {
         <IconButton
           aria-label="Add product"
           icon={<BiPlus />}
-          onClick={() => addProduct(product)}
+          onClick={() =>
+            addProduct({
+              ...product,
+              originProductId: product.id,
+            })
+          }
         />
       )}
       {product && !addProduct && (

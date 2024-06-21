@@ -14,9 +14,9 @@ import { useDisclosure } from "@chakra-ui/hooks";
 import EditCustomProductModal from "@/components/day/EditCustomProductModal";
 
 interface EditCustomProductProp {
-  product: components["schemas"]["Product"];
-  products: components["schemas"]["Product"][];
-  setProducts: (products: components["schemas"]["Product"][]) => void;
+  product: components["schemas"]["CustomProduct"];
+  products: components["schemas"]["CustomProduct"][];
+  setProducts: (products: components["schemas"]["CustomProduct"][]) => void;
   index: number;
 }
 
@@ -32,7 +32,7 @@ const EditCustomProduct = ({
     <>
       <Flex
         {...flexStyle}
-        key={product.id}
+        key={product.originProductId}
         _hover={{
           cursor: "pointer",
         }}

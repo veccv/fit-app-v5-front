@@ -43,7 +43,7 @@ const HomePage = () => {
           />
           <Divider />
           <Stack w="100%">
-            {error ? (
+            {error || !userDay ? (
               <Stack
                 w="100%"
                 h="100%"

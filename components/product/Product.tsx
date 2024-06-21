@@ -4,7 +4,7 @@ import ProductModal from "@/components/product/ProductModal";
 
 interface ProductProps {
   product: components["schemas"]["Product"];
-  addProduct?: (product: components["schemas"]["Product"]) => void;
+  addProduct?: (product: components["schemas"]["CustomProduct"]) => void;
 }
 
 const Product = ({ product, addProduct }: ProductProps) => {

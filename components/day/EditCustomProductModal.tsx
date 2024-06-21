@@ -15,11 +15,11 @@ import { useFitContext } from "@/context/FitContext";
 import useSWR from "swr";
 
 interface EditCustomProductProp {
-  product: components["schemas"]["Product"];
-  products: components["schemas"]["Product"][];
+  product: components["schemas"]["CustomProduct"];
+  products: components["schemas"]["CustomProduct"][];
   index: number;
   onClose: () => void;
-  setProducts: (products: components["schemas"]["Product"][]) => void;
+  setProducts: (products: components["schemas"]["CustomProduct"][]) => void;
 }
 
 const schema = z.object({
@@ -41,7 +41,7 @@ const EditCustomProductModal = ({
 }: EditCustomProductProp) => {
   const { fetcher } = useFitContext();
   const { data: originalProduct } = useSWR<components["schemas"]["Product"]>(
-    `/api/api/v1/product?id=${product.id}`,
+    `/api/api/v1/product?id=${product.originProductId}`,
     fetcher,
   );
 

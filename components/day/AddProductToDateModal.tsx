@@ -15,7 +15,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useDisclosure } from "@chakra-ui/hooks";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ProductsList from "@/components/product/ProductsList";
 import { components } from "@/utils/generated-schema";
 import EditCustomProduct from "@/components/day/EditCustomProduct";
@@ -35,29 +35,54 @@ const AddProductToDateModal = ({
 }: AddProductToDateModalProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [query, setQuery] = useState("");
-  const [products, setProducts] = useState<components["schemas"]["Product"][]>(
-    [],
-  );
+  const [products, setProducts] = useState<
+    components["schemas"]["CustomProduct"][]
+  >([]);
 
-  const addProduct = (product: components["schemas"]["Product"]) => {
+  const addProduct = (product: components["schemas"]["CustomProduct"]) => {
     setProducts((prevProducts) => [...prevProducts, product]);
   };
 
   const updateDay = async () => {
-    ManageData(
-      "PUT",
-      `api/api/v1/users/day/products?userDayId=${userDay.id}&dayTime=${dayTime}`,
-      products,
-    ).then(() => {
+    if (dayTime === "BREAKFAST") {
+      userDay = {
+        ...userDay,
+        breakfastProducts: products,
+      };
+    } else {
+      userDay = {
+        ...userDay,
+        lunchProducts: products,
+      };
+    }
+
+    ManageData("PUT", `api/api/v1/users/day`, userDay).then(() => {
       mutate(`api/api/v1/users/day/date?date=${date}`);
       onClose();
     });
   };
 
+  useEffect(() => {
+    if (dayTime === "BREAKFAST") {
+      setProducts(userDay.breakfastProducts);
+    } else {
+      setProducts(userDay.lunchProducts);
+    }
+  }, [dayTime, userDay.breakfastProducts, userDay.lunchProducts]);
+
+  const onCloseAction = () => {
+    if (dayTime === "BREAKFAST") {
+      setProducts(userDay.breakfastProducts);
+    } else {
+      setProducts(userDay.lunchProducts);
+    }
+    onClose();
+  };
+
   return (
     <>
       <IconButton aria-label="Add product" icon={<CiEdit />} onClick={onOpen} />
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onCloseAction}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Add product</ModalHeader>
@@ -73,7 +98,7 @@ const AddProductToDateModal = ({
                 )}
                 {products.map((product, index) => (
                   <EditCustomProduct
-                    key={product.id}
+                    key={product.originProductId}
                     product={product}
                     index={index}
                     setProducts={setProducts}
@@ -95,7 +120,7 @@ const AddProductToDateModal = ({
           </ModalBody>
           <ModalFooter>
             <Button colorScheme="blue" onClick={updateDay}>
-              Add selected products
+              Update daytime
             </Button>
           </ModalFooter>
         </ModalContent>

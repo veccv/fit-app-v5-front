@@ -6,7 +6,7 @@ import Product from "@/components/product/Product";
 
 interface ProductsListProps {
   query: string;
-  addProduct?: (product: components["schemas"]["Product"]) => void;
+  addProduct?: (product: components["schemas"]["CustomProduct"]) => void;
 }
 
 const ProductsList = ({ query, addProduct }: ProductsListProps) => {
